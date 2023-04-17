@@ -1,7 +1,4 @@
-import React, { useState } from "react";
-import Carousel from "react-bootstrap/Carousel";
-import img1 from "../assets/image1.png";
-import img2 from "../assets/image2.jpg";
+import React from "react";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -13,8 +10,6 @@ import card5 from "../assets/card5.jpg";
 import card6 from "../assets/card6.jpg";
 
 function Home() {
-  const [index, setIndex] = useState(0);
-
   const cardcontent = [
     {
       img: card1,
@@ -47,10 +42,6 @@ function Home() {
       body: "Quizify provides real-time tracking of students' progress and performance. Teachers can monitor students' quiz scores, view detailed reports, and identify areas for improvement. Students can track their own progress and strive for better results.",
     },
   ];
-
-  const handleSelect = (selectedIndex, e) => {
-    setIndex(selectedIndex);
-  };
 
   return (
     <div className="text-center">
@@ -91,27 +82,7 @@ function Home() {
           </Col>
         ))}
       </Row>
-      <Carousel
-        activeIndex={index}
-        onSelect={handleSelect}
-        className="h-50 w-50 my-4 m-auto"
-      >
-        <Carousel.Item>
-          <img className="d-block h-50 w-100" src={img1} alt="First slide" />
-          <Carousel.Caption>
-            <h3>First slide label</h3>
-            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-          </Carousel.Caption>
-        </Carousel.Item>
-        <Carousel.Item>
-          <img className="d-block w-100" src={img2} alt="Second slide" />
 
-          <Carousel.Caption>
-            <h3>Second slide label</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-          </Carousel.Caption>
-        </Carousel.Item>
-      </Carousel>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
         <path
           fill="#5000ca"

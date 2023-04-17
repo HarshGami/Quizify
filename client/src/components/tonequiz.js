@@ -5,8 +5,10 @@ import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 
 function Tonequiz({ tonequiz }) {
+  const textcolor = ["text-warning","text-danger","text-success","text-primary"]
   const [tresponse, settresponse] = useState();
   const [edit, setedit] = useState(0);
+  const [studentinfo, setstudentinfo] = useState(0);
 
   useEffect(() => {
     async function req() {
@@ -29,11 +31,6 @@ function Tonequiz({ tonequiz }) {
     req();
   }, []);
 
-  function editquiz(e) {
-    e.preventDefault();
-    setedit(1);
-  }
-
   async function updatequiz() {
     const res = await fetch(process.env.REACT_APP_UPDATE_QUIZ, {
       method: "POST",
@@ -44,7 +41,7 @@ function Tonequiz({ tonequiz }) {
         quizname: tonequiz.quizname,
         createdby: jwt(localStorage.getItem("tokenemail")).email,
         questions: tresponse.questions,
-        students:tresponse.students
+        students: tresponse.students,
       }),
     });
 
@@ -86,62 +83,89 @@ function Tonequiz({ tonequiz }) {
   }
 
   return (
-    <>
+    <Card>
+      <Card.Body className="text-center">
+        <Card.Title className="p-3 mb-2 rounded bg-secondary text-white">{tonequiz.quizname}</Card.Title>
+        <Card.Text className="text-success">Student Count: {tonequiz.studentcount}</Card.Text>
+        <div className="w-20 mx-auto">
+          <Button
+            className="m-2"
+            variant="outline-primary"
+            type="submit"
+            onClick={(e) => {
+              setedit(0);
+              setstudentinfo(0);
+            }}
+          >
+            Questions Details
+          </Button>
+          <Button
+            className="m-2"
+            variant="outline-danger"
+            type="submit"
+            onClick={(e) => setedit(1)}
+          >
+            Edit Quiz
+          </Button>
+          <Button
+            className="m-2"
+            variant="outline-dark"
+            type="submit"
+            onClick={(e) => {
+              setedit(0);
+              setstudentinfo(1);
+            }}
+          >
+            Student Details
+          </Button>
+        </div>
+        <hr />
+      </Card.Body>
       {edit === 0 ? (
-        <Card>
-          <Card.Body className="text-center">
-            <Card.Title>{tonequiz.quizname}</Card.Title>
-            <Card.Text>Student Count: {tonequiz.studentcount}</Card.Text>
-            <Button
-              className="w-20 mx-auto"
-              variant="primary"
-              type="submit"
-              onClick={editquiz}
-            >
-              Edit Quiz
-            </Button>
-            <hr />
-          </Card.Body>
-          <Card.Body className="mx-5">
-            <Card.Title>Quiz Questions</Card.Title>
-            {tresponse &&
-              tresponse.questions.map((x, i) => (
+        <Card.Body className="mx-5">
+          {tresponse && studentinfo === 0 && (
+            <>
+              {tresponse.questions.map((x, i) => (
                 <>
-                  <Card.Text>
+                  <Card.Text className="h5">
                     <b>{i + 1}. </b>
                     {x.question}
                   </Card.Text>
-                  <Card.Text>A: {x.option1}</Card.Text>
-                  <Card.Text>B: {x.option2}</Card.Text>
-                  <Card.Text>C: {x.option3}</Card.Text>
-                  <Card.Text>D: {x.option4}</Card.Text>
-                  <Card.Text>Answer: {x.answer}</Card.Text>
+                  <Card.Text>(A) {x.option1}</Card.Text>
+                  <Card.Text>(B) {x.option2}</Card.Text>
+                  <Card.Text>(C) {x.option3}</Card.Text>
+                  <Card.Text>(D) {x.option4}</Card.Text>
+                  <Card.Text className="p-2 text-white bg-dark">Answer: {x.answer}</Card.Text>
                   <hr />
                 </>
               ))}
-          </Card.Body>
-          <Card.Body className="mx-5">
-            <Card.Title>Students Details</Card.Title>
-            {tresponse &&
-              tresponse.students.map((e, j) => (
-                <>
-                  <Card.Text>
-                    <b>{j + 1}. </b> {e.useremail}: {e.result}/{tresponse.questions.length}
+            </>
+          )}
+          {tresponse && studentinfo === 1 && (
+            <>
+              {tonequiz.studentcount===0 && (
+                  <Card className="mb-5 text-center h4 text-warning">
+                    <Card.Body>No studnets has completed quiz yet.</Card.Body>
+                  </Card>
+              )}
+              {tresponse.students.map((e, j) => (
+                  <Card.Text className={`w-75 mx-auto text-center ${textcolor[j%(textcolor.length)]}`}>
+                    <b>{j + 1}. </b> {e.useremail}: <span className="text-white bg-dark">( {e.result}/
+                    {tresponse.questions.length} )</span>
                   </Card.Text>
-                  <Card.Text></Card.Text>
-                </>
               ))}
-          </Card.Body>
-        </Card>
+            </>
+          )}
+        </Card.Body>
       ) : (
-        <Card.Body className="m-5">
-          <Card.Title className="pb-3">Quiz Questions</Card.Title>
+        <Card.Body className="w-100 mx-auto text-center">
           {tresponse &&
             tresponse.questions.map((x, i) => (
-              <>
+              <div>
                 <Card.Text>
                   <b>{i + 1}. </b>
                   <Form.Control
+                    className="d-inline w-75 mx-1"
                     type="text"
                     placeholder="Enter Option A"
                     value={x.question}
@@ -149,8 +173,9 @@ function Tonequiz({ tonequiz }) {
                   />
                 </Card.Text>
                 <Card.Text>
-                  A:
+                  (A)
                   <Form.Control
+                    className="d-inline w-75 mx-1"
                     type="text"
                     placeholder="Enter Option A"
                     value={x.option1}
@@ -158,8 +183,9 @@ function Tonequiz({ tonequiz }) {
                   />
                 </Card.Text>
                 <Card.Text>
-                  B:
+                  (B)
                   <Form.Control
+                    className="d-inline w-75 mx-1"
                     type="text"
                     placeholder="Enter Option A"
                     value={x.option2}
@@ -167,8 +193,9 @@ function Tonequiz({ tonequiz }) {
                   />
                 </Card.Text>
                 <Card.Text>
-                  C:
+                  (C)
                   <Form.Control
+                    className="d-inline w-75 mx-1"
                     type="text"
                     placeholder="Enter Option A"
                     value={x.option3}
@@ -176,8 +203,9 @@ function Tonequiz({ tonequiz }) {
                   />
                 </Card.Text>
                 <Card.Text>
-                  D:
+                  (D)
                   <Form.Control
+                    className="d-inline w-75 mx-1"
                     type="text"
                     placeholder="Enter Option A"
                     value={x.option4}
@@ -185,8 +213,9 @@ function Tonequiz({ tonequiz }) {
                   />
                 </Card.Text>
                 <Card.Text>
-                  Answer:
+                  Answer
                   <Form.Control
+                    className="d-inline w-25 mx-1"
                     type="text"
                     placeholder="Enter Option A"
                     value={x.answer}
@@ -194,11 +223,11 @@ function Tonequiz({ tonequiz }) {
                   />
                 </Card.Text>
                 <hr />
-              </>
+              </div>
             ))}
           <Button
             className="w-20 mx-auto"
-            variant="primary"
+            variant="danger"
             type="submit"
             onClick={updatequiz}
           >
@@ -206,7 +235,7 @@ function Tonequiz({ tonequiz }) {
           </Button>
         </Card.Body>
       )}
-    </>
+    </Card>
   );
 }
 

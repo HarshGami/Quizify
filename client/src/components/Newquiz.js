@@ -6,7 +6,7 @@ import jwt from "jwt-decode";
 
 function Newquiz() {
   const [quizname, setquizname] = useState("");
-  const [timer,settimer] = useState();
+  const [timer, settimer] = useState();
   const [quiz, setquiz] = useState([]);
   const [newquestion, setquestion] = useState({
     question: "",
@@ -28,7 +28,7 @@ function Newquiz() {
       newquestion.option4 === "" ||
       newquestion.answer === ""
     ) {
-      alert("Enter all the fields");
+      alert("Enter all the fields of question");
       return;
     }
     if (
@@ -36,7 +36,7 @@ function Newquiz() {
       newquestion.answer > "D" ||
       newquestion.answer < "A"
     ) {
-      alert("Enter valid option for answer");
+      alert("Enter valid (capital) option for answer");
       return;
     }
 
@@ -62,7 +62,7 @@ function Newquiz() {
       alert("Enter questions for quiz");
       return;
     }
-    if (isNaN(timer) || timer<=0) {
+    if (isNaN(timer) || timer <= 0) {
       alert("Enter valid Time");
       return;
     }
@@ -76,7 +76,7 @@ function Newquiz() {
         name: jwt(localStorage.getItem("tokenemail")).email,
         questions: quiz,
         quizname: quizname,
-        time:timer
+        time: timer,
       }),
     });
 
@@ -84,11 +84,11 @@ function Newquiz() {
 
     if (data.status === "error") {
       alert(data.message);
-    } else if (data.status === "ok") {
-      alert(
-        "quiz generated successfully || Share your username(Email) and Quiz Name to Student"
-      );
+      return;
     }
+    alert(
+      "quiz generated successfully || Share your username (Email) and Quiz Name to Students"
+    );
     setquizname("");
     setquiz([]);
     setquestion({
@@ -99,16 +99,16 @@ function Newquiz() {
       option4: "",
       answer: "",
     });
-
     window.location.reload(true);
   }
 
   return (
     <div className="my-4 w-75 mx-auto">
-      <Form className="card p-4 mx-2">
+      <Form className="card p-4 mx-2 text-center">
         <Form.Group className="mb-3">
           <Form.Label>Question</Form.Label>
           <Form.Control
+            className="d-inline mx-1"
             type="text"
             placeholder="Enter Question"
             value={newquestion.question}
@@ -118,8 +118,9 @@ function Newquiz() {
           />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label>A</Form.Label>
+          <Form.Label>(A)</Form.Label>
           <Form.Control
+            className="d-inline w-75 mx-1"
             type="text"
             placeholder="Enter Option A"
             value={newquestion.option1}
@@ -129,8 +130,9 @@ function Newquiz() {
           />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label>B</Form.Label>
+          <Form.Label>(B)</Form.Label>
           <Form.Control
+            className="d-inline w-75 mx-1"
             type="text"
             placeholder="Enter Option B"
             value={newquestion.option2}
@@ -140,8 +142,9 @@ function Newquiz() {
           />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label>C</Form.Label>
+          <Form.Label>(C)</Form.Label>
           <Form.Control
+            className="d-inline w-75 mx-1"
             type="text"
             placeholder="Enter Option C"
             value={newquestion.option3}
@@ -151,8 +154,9 @@ function Newquiz() {
           />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label>D</Form.Label>
+          <Form.Label>(D)</Form.Label>
           <Form.Control
+            className="d-inline w-75 mx-1"
             type="text"
             placeholder="Enter Option D"
             value={newquestion.option4}
@@ -164,6 +168,7 @@ function Newquiz() {
         <Form.Group className="mb-3">
           <Form.Label>Answer</Form.Label>
           <Form.Control
+            className="d-inline w-50 mx-1"
             type="text"
             placeholder="Enter Option (example: A)"
             value={newquestion.answer}
@@ -173,7 +178,7 @@ function Newquiz() {
           />
         </Form.Group>
         <Button
-          className="w-20 mx-auto"
+          className="mx-auto"
           variant="primary"
           type="submit"
           onClick={addquestion}
@@ -181,10 +186,12 @@ function Newquiz() {
           Add Question
         </Button>
       </Form>
-      <Card className="card p-4 m-2">
+      <Card className="card p-4 m-2 text-left">
+        <Card.Title className="text-center text-danger">
+          You can edit quiz after creating whole quiz.
+        </Card.Title>
         {quiz.map((e, i) => (
           <Card.Body>
-            <Card.Title className="text-center">You can edit quiz after creating whole quiz.</Card.Title>
             <Card.Title>
               {i + 1}. {e.question}
             </Card.Title>
@@ -196,10 +203,11 @@ function Newquiz() {
           </Card.Body>
         ))}
       </Card>
-      <Form className="card p-4 mx-2">
+      <Form className="card p-4 mx-2 text-center">
         <Form.Group className="mb-3">
           <Form.Label>Quiz Name</Form.Label>
           <Form.Control
+            className="d-inline w-75 mx-1"
             type="text"
             placeholder="Enter Quiz Name"
             value={quizname}
@@ -209,6 +217,7 @@ function Newquiz() {
         <Form.Group className="mb-3">
           <Form.Label>Quiz Time</Form.Label>
           <Form.Control
+            className="d-inline w-75 mx-1"
             type="text"
             placeholder="Enter Quiz Time (in Minute)"
             value={timer}
@@ -216,8 +225,8 @@ function Newquiz() {
           />
         </Form.Group>
         <Button
-          className="my-2 w-20 mx-auto"
-          variant="primary"
+          className="my-2 mx-auto"
+          variant="success"
           type="submit"
           onClick={makequiz}
         >

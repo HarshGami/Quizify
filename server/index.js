@@ -8,7 +8,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-mongoose.connect("mongodb://localhost:27017/quizify");
+mongoose.connect(process.env.MONGO);
 
 
 app.use(cors());

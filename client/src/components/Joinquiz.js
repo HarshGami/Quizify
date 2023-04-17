@@ -17,7 +17,7 @@ function Joinquiz() {
     e.preventDefault();
 
     if (creatoremail === "" || quizname === "") {
-      alert("Enter proper details");
+      alert("Enter full details");
       return;
     }
 
@@ -29,6 +29,7 @@ function Joinquiz() {
       body: JSON.stringify({
         createdby: creatoremail,
         quizname,
+        useremail: jwt(localStorage.getItem("tokenemail")).email,
       }),
     });
 
@@ -39,7 +40,7 @@ function Joinquiz() {
       return;
     }
 
-    settime(data.time*60);
+    settime(data.time * 60);
     setquestions(data.questions);
     setstart(1);
     timer();
@@ -107,69 +108,74 @@ function Joinquiz() {
   return (
     <div className="my-4 w-75 mx-auto">
       {start ? (
-        <Form className="card p-4 mx-2">
+        <>
           <div className="d-flex h4 rounded bg-secondary text-white justify-content-between p-2 my-2">
-            <div>{quizname}</div>
-            <div>{parseInt(time / 60)}:{time % 60} Minutes Left</div>
+            <div className="p-2">{quizname}</div>
+            <div className="p-2">
+              {parseInt(time / 60)}:{time % 60} Minutes Left
+            </div>
           </div>
-          <div className="h5 my-2">Questions:</div>
-          {questions.map((e, i) => (
-            <>
-              <Card.Title>
-                {i + 1}. {e.question}
-              </Card.Title>
-              <Form.Check
-                type="radio"
-                id="A"
-                label={e.option1}
-                name={`option${i}`}
-                onChange={(event) =>
-                  setuserans((userans) => [...userans, [i, "A"]])
-                }
-              />
-              <Form.Check
-                type="radio"
-                id="B"
-                label={e.option2}
-                name={`option${i}`}
-                onChange={(event) =>
-                  setuserans((userans) => [...userans, [i, "B"]])
-                }
-              />
-              <Form.Check
-                type="radio"
-                id="C"
-                label={e.option3}
-                name={`option${i}`}
-                onChange={(event) =>
-                  setuserans((userans) => [...userans, [i, "C"]])
-                }
-              />
-              <Form.Check
-                type="radio"
-                id="D"
-                label={e.option4}
-                name={`option${i}`}
-                onChange={(event) =>
-                  setuserans((userans) => [...userans, [i, "D"]])
-                }
-              />
-            </>
-          ))}
-          <Button
-            className="w-20 mx-auto"
-            variant="primary"
-            type="submit"
-            onClick={submitquiz}
-          >
-            Submit Quiz
-          </Button>
-        </Form>
+          <Form className="card p-4 mx-2">
+            {questions.map((e, i) => (
+              <>
+                <Card.Title className="mt-3">
+                  {i + 1}. {e.question}
+                </Card.Title>
+                <Form.Check
+                  type="radio"
+                  id={`A${i}`}
+                  label={e.option1}
+                  name={`option${i}`}
+                  onChange={(event) =>
+                    setuserans((userans) => [...userans, [i, "A"]])
+                  }
+                />
+                <Form.Check
+                  type="radio"
+                  id={`B${i}`}
+                  label={e.option2}
+                  name={`option${i}`}
+                  onChange={(event) =>
+                    setuserans((userans) => [...userans, [i, "B"]])
+                  }
+                />
+                <Form.Check
+                  type="radio"
+                  id={`C${i}`}
+                  label={e.option3}
+                  name={`option${i}`}
+                  onChange={(event) =>
+                    setuserans((userans) => [...userans, [i, "C"]])
+                  }
+                />
+                <Form.Check
+                  className="mb-2"
+                  type="radio"
+                  id={`D${i}`}
+                  label={e.option4}
+                  name={`option${i}`}
+                  onChange={(event) =>
+                    setuserans((userans) => [...userans, [i, "D"]])
+                  }
+                />
+              </>
+            ))}
+            <Button
+              className="w-20 mx-auto"
+              variant="primary"
+              type="submit"
+              onClick={submitquiz}
+            >
+              Submit Quiz
+            </Button>
+          </Form>
+        </>
       ) : (
-        <Form className="card p-4 mx-2">
+        <Form className="card p-4 mx-2 text-center">
           <Form.Group className="mb-3">
             <Form.Label>Creator Email</Form.Label>
             <Form.Control
+              className="d-inline w-75 mx-1"
               type="email"
               placeholder="Enter Creater Email"
               value={creatoremail}
@@ -179,6 +185,7 @@ function Joinquiz() {
           <Form.Group className="mb-3">
             <Form.Label>Quiz Name</Form.Label>
             <Form.Control
+              className="d-inline w-75 mx-1"
               type="text"
               placeholder="Enter Quiz Name"
               value={quizname}

@@ -12,10 +12,17 @@ import quiz5 from "../assets/quiz5.png";
 import quiz6 from "../assets/quiz6.png";
 import quiz7 from "../assets/quiz7.png";
 
-function DeshboardStudent({setsonequiz}) {
+function DeshboardStudent({ setsonequiz }) {
+  const textcolor = [
+    "text-primary",
+    "text-success",
+    "text-danger",
+    "text-warning",
+  ];
   const [response, setresponse] = useState([]);
-  const img = [quiz1,quiz2,quiz3,quiz4,quiz5,quiz6,quiz7]
-  
+  const [message,setmessage] = useState("");
+  const img = [quiz1, quiz2, quiz3, quiz4, quiz5, quiz6, quiz7];
+
   useEffect(() => {
     async function req() {
       const res = await fetch(process.env.REACT_APP_S_DESHBOARD, {
@@ -30,29 +37,44 @@ function DeshboardStudent({setsonequiz}) {
 
       const data = await res.json();
       if (data.response) setresponse(data.response);
-      if (data.message) alert(data.message)
+      if(data.message) setmessage(data.message);
     }
 
     req();
   }, []);
 
   return (
-    <Row xs={1} sm={2} md={3} className="m-4">
-      {response.map((e,i) => (
-        <Col>
-        <LinkContainer to="/sonequiz" onClick={(event) => setsonequiz(e)}>
-          <Card className="shadow p-3 mb-5 bg-white rounded text-center">
-            <Card.Img className="w-50 m-auto" variant="top" src={img[i]} />
-            <Card.Body>
-              <Card.Title>Quiz Name: {e.quizname}</Card.Title>
-              <Card.Text>Result: {e.result}</Card.Text>
-              <Card.Text>createdBy: {e.createdby}</Card.Text>
-            </Card.Body>
-          </Card>
-        </LinkContainer>
-        </Col>
-      ))}
-    </Row>
+    <>
+      {message && (
+        <Card className="m-5 text-center h4 text-warning">
+          <Card.Body>{message}</Card.Body>
+        </Card>
+      )}
+      <Row xs={1} sm={2} md={3} className="m-4">
+        {response.map((e, i) => (
+          <Col>
+            <LinkContainer to="/sonequiz" onClick={(event) => setsonequiz(e)}>
+              <Card className="shadow p-3 mb-5 bg-white rounded text-center">
+                <Card.Img className="w-50 m-auto" variant="top" src={img[i]} />
+                <Card.Body>
+                  <Card.Title className={textcolor[i % textcolor.length]}>
+                    Quiz Name: {e.quizname}
+                  </Card.Title>
+                  <Card.Text
+                    className={
+                      textcolor[textcolor.length - 1 - (i % textcolor.length)]
+                    }
+                  >
+                    Result: {e.result}
+                  </Card.Text>
+                  <Card.Text>Created By: {e.createdby}</Card.Text>
+                </Card.Body>
+              </Card>
+            </LinkContainer>
+          </Col>
+        ))}
+      </Row>
+    </>
   );
 }
 

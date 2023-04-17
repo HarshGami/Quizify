@@ -20,7 +20,7 @@ exports.makequiz = async (req, res) => {
       createdby: req.body.name,
       questions: req.body.questions,
       quizname: req.body.quizname,
-      time: req.body.time
+      time: req.body.time,
     });
 
     res.json({ status: "ok", message: "success" });
@@ -31,10 +31,29 @@ exports.makequiz = async (req, res) => {
 
 exports.enterquiz = async (req, res) => {
   try {
+    const resultfound = await resultmodel.findOne({
+      createdby: req.body.createdby,
+      quizname: req.body.quizname,
+      useremail: req.body.useremail,
+    });
+
+    if (resultfound) {
+      res.json({
+        status: "error",
+        message: "you have alrady completed this quiz",
+      });
+      return;
+    }
+
     const user = await quizmodel.findOne({
       createdby: req.body.createdby,
       quizname: req.body.quizname,
     });
+
+    if (!user) {
+      res.json({ status: "error", message: "Quiz not found" });
+      return ;
+    }
 
     const questions = await user.questions.map((e) => {
       return {
@@ -46,11 +65,7 @@ exports.enterquiz = async (req, res) => {
       };
     });
 
-    if (user) {
-      res.json({ status: "ok", questions ,time:user.time});
-    } else {
-      res.json({ status: "error", message: "Quiz not found" });
-    }
+    res.json({ status: "ok", questions, time: user.time });
   } catch (error) {
     res.json({ status: "error", message: "Quiz not found" });
   }
@@ -62,7 +77,7 @@ exports.submitquiz = async (req, res) => {
       createdby: req.body.createdby,
       quizname: req.body.quizname,
     });
-    
+
     const answers = await user.questions.map((e) => {
       return e.answer;
     });
@@ -84,7 +99,7 @@ exports.submitquiz = async (req, res) => {
         useranswer.push(userans[i]);
       }
     }
-    if(userans.length>0) useranswer.push(userans[userans.length - 1]);
+    if (userans.length > 0) useranswer.push(userans[userans.length - 1]);
 
     let result = 0;
     for (let i = 0; i < answers.length; i++) {
@@ -94,21 +109,7 @@ exports.submitquiz = async (req, res) => {
         }
       }
     }
-
-    const resultfound = await resultmodel.findOne({
-      createdby: req.body.createdby,
-      quizname: req.body.quizname,
-      useremail: req.body.useremail,
-    });
-
-    if (resultfound) {
-      res.json({
-        status: "error",
-        message: "you have alrady completed this quiz",
-      });
-      return;
-    }
-
+    
     await resultmodel.create({
       useremail: req.body.useremail,
       createdby: req.body.createdby,
@@ -205,7 +206,7 @@ exports.tonequiz = async (req, res) => {
           result: count[j].result,
         });
       }
-      const response ={
+      const response = {
         studentcount: count.length,
         quizname: user.quizname,
         questions: user.questions,
@@ -221,64 +222,71 @@ exports.tonequiz = async (req, res) => {
   }
 };
 
-
-exports.updatequiz = async (req,res)=>{
-  try{
-    const result = await quizmodel.updateOne({
-      quizname:req.body.quizname,
-      createdby:req.body.createdby
-    }, {
-      $set: {
-        questions: req.body.questions
+exports.updatequiz = async (req, res) => {
+  try {
+    const result = await quizmodel.updateOne(
+      {
+        quizname: req.body.quizname,
+        createdby: req.body.createdby,
+      },
+      {
+        $set: {
+          questions: req.body.questions,
+        },
       }
-    });
+    );
 
-    if(result.modifiedCount){
+    if (result.modifiedCount) {
       const user = await quizmodel.findOne({
         createdby: req.body.createdby,
         quizname: req.body.quizname,
       });
-      
+
       const answers = await user.questions.map((e) => {
         return e.answer;
       });
-      
-      const useremails = await req.body.students.map((e)=>{
+
+      const useremails = await req.body.students.map((e) => {
         return e.useremail;
-      })
-      
-      for(let i=0;i<useremails.length;i++){
+      });
+
+      for (let i = 0; i < useremails.length; i++) {
         const student = await resultmodel.findOne({
-          quizname:req.body.quizname,
-          createdby:req.body.createdby,
-          useremail:useremails[i]
-        })
-        
-        let result=0;
-        for(let j=0;j<answers.length;j++){
-          for(let x=0;x<student.useranswer.length;x++){
-            if(student.useranswer[x][0]===j && student.useranswer[x][1]===answers[j]){
+          quizname: req.body.quizname,
+          createdby: req.body.createdby,
+          useremail: useremails[i],
+        });
+
+        let result = 0;
+        for (let j = 0; j < answers.length; j++) {
+          for (let x = 0; x < student.useranswer.length; x++) {
+            if (
+              student.useranswer[x][0] === j &&
+              student.useranswer[x][1] === answers[j]
+            ) {
               result++;
             }
           }
         }
-        
-        const updateresult = await resultmodel.updateOne({
-          quizname:req.body.quizname,
-          createdby:req.body.createdby,
-          useremail:useremails[i]
-         },{
-          $set:{
-            result:result,
+
+        const updateresult = await resultmodel.updateOne(
+          {
+            quizname: req.body.quizname,
+            createdby: req.body.createdby,
+            useremail: useremails[i],
+          },
+          {
+            $set: {
+              result: result,
+            },
           }
-         })
+        );
       }
-      res.json({status:"ok",message:"updated successfilly"})
+      res.json({ status: "ok", message: "updated successfilly" });
+    } else {
+      res.json({ status: "ok", message: "no changes is made by you" });
     }
-    else{
-      res.json({status:'ok',message:"no changes is made by you"})
-    }
-  }catch(error){
-    res.json({status:"error",message:error})
+  } catch (error) {
+    res.json({ status: "error", message: error });
   }
-}
+};
