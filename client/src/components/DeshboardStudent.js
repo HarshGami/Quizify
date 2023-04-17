@@ -20,7 +20,7 @@ function DeshboardStudent({ setsonequiz }) {
     "text-warning",
   ];
   const [response, setresponse] = useState([]);
-  const [message,setmessage] = useState("");
+  const [message, setmessage] = useState("");
   const img = [quiz1, quiz2, quiz3, quiz4, quiz5, quiz6, quiz7];
 
   useEffect(() => {
@@ -37,7 +37,7 @@ function DeshboardStudent({ setsonequiz }) {
 
       const data = await res.json();
       if (data.response) setresponse(data.response);
-      if(data.message) setmessage(data.message);
+      if (data.message) setmessage(data.message);
     }
 
     req();
@@ -54,7 +54,10 @@ function DeshboardStudent({ setsonequiz }) {
         {response.map((e, i) => (
           <Col>
             <LinkContainer to="/sonequiz" onClick={(event) => setsonequiz(e)}>
-              <Card className="shadow p-3 mb-5 bg-white rounded text-center">
+              <Card
+                role="button"
+                className="shadow p-3 mb-5 bg-white rounded text-center"
+              >
                 <Card.Img className="w-50 m-auto" variant="top" src={img[i]} />
                 <Card.Body>
                   <Card.Title className={textcolor[i % textcolor.length]}>

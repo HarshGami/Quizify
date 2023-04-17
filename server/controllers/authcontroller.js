@@ -1,7 +1,7 @@
-const usermodel  = require("../models/usermodel");
+const usermodel = require("../models/usermodel");
 const jwt = require("jsonwebtoken");
 
-exports.register = async(req, res) => {
+exports.register = async (req, res) => {
   try {
     const user = await usermodel.findOne({
       email: req.body.email,
@@ -42,9 +42,9 @@ exports.register = async(req, res) => {
   } catch (error) {
     res.json({ status: "error", message: error });
   }
-}
+};
 
-exports.login  =  async (req, res) => {
+exports.login = async (req, res) => {
   try {
     const user = await usermodel.findOne({
       email: req.body.email,
@@ -79,4 +79,4 @@ exports.login  =  async (req, res) => {
   } catch (error) {
     res.json({ status: "error", message: error });
   }
-}
+};

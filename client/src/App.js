@@ -15,8 +15,8 @@ function App() {
   const role = localStorage.getItem("role");
   const tokenemail = localStorage.getItem("tokenemail");
   const tokenpassword = localStorage.getItem("tokenpassword");
-  const [sonequiz,setsonequiz] = useState([]);
-  const [tonequiz,settonequiz] = useState([]);
+  const [sonequiz, setsonequiz] = useState([]);
+  const [tonequiz, settonequiz] = useState([]);
 
   return (
     <div className="App">
@@ -27,9 +27,17 @@ function App() {
               <Router>
                 <NavBar isAuth={isAuth} setIsAuth={setIsAuth} role={role} />
                 <Routes>
-                  <Route exact path="*" element={<DashboardTeacher settonequiz={settonequiz}/>}></Route>
+                  <Route
+                    exact
+                    path="*"
+                    element={<DashboardTeacher settonequiz={settonequiz} />}
+                  ></Route>
                   <Route exact path="/newquiz" element={<Newquiz />}></Route>
-                  <Route exact path="/tonequiz" element={<Tonequiz tonequiz={tonequiz}/>}></Route>
+                  <Route
+                    exact
+                    path="/tonequiz"
+                    element={<Tonequiz tonequiz={tonequiz} />}
+                  ></Route>
                 </Routes>
               </Router>
             </>
@@ -37,9 +45,17 @@ function App() {
             <Router>
               <NavBar isAuth={isAuth} setIsAuth={setIsAuth} role={role} />
               <Routes>
-                <Route exact path="*" element={<DeshboardStudent setsonequiz={setsonequiz}/>}></Route>
+                <Route
+                  exact
+                  path="*"
+                  element={<DeshboardStudent setsonequiz={setsonequiz} />}
+                ></Route>
                 <Route exact path="/joinquiz" element={<Joinquiz />}></Route>
-                <Route exact path="/sonequiz" element={<Sonequiz sonequiz={sonequiz}/>}></Route>
+                <Route
+                  exact
+                  path="/sonequiz"
+                  element={<Sonequiz sonequiz={sonequiz} />}
+                ></Route>
               </Routes>
             </Router>
           )}

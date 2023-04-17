@@ -5,7 +5,12 @@ import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 
 function Tonequiz({ tonequiz }) {
-  const textcolor = ["text-warning","text-danger","text-success","text-primary"]
+  const textcolor = [
+    "text-warning",
+    "text-danger",
+    "text-success",
+    "text-primary",
+  ];
   const [tresponse, settresponse] = useState();
   const [edit, setedit] = useState(0);
   const [studentinfo, setstudentinfo] = useState(0);
@@ -85,8 +90,12 @@ function Tonequiz({ tonequiz }) {
   return (
     <Card>
       <Card.Body className="text-center">
-        <Card.Title className="p-3 mb-2 rounded bg-secondary text-white">{tonequiz.quizname}</Card.Title>
-        <Card.Text className="text-success">Student Count: {tonequiz.studentcount}</Card.Text>
+        <Card.Title className="p-3 mb-2 rounded bg-secondary text-white">
+          {tonequiz.quizname}
+        </Card.Title>
+        <Card.Text className="text-success">
+          Student Count: {tonequiz.studentcount}
+        </Card.Text>
         <div className="w-20 mx-auto">
           <Button
             className="m-2"
@@ -135,7 +144,9 @@ function Tonequiz({ tonequiz }) {
                   <Card.Text>(B) {x.option2}</Card.Text>
                   <Card.Text>(C) {x.option3}</Card.Text>
                   <Card.Text>(D) {x.option4}</Card.Text>
-                  <Card.Text className="p-2 text-white bg-dark">Answer: {x.answer}</Card.Text>
+                  <Card.Text className="p-2 text-white bg-dark">
+                    Answer: {x.answer}
+                  </Card.Text>
                   <hr />
                 </>
               ))}
@@ -143,16 +154,22 @@ function Tonequiz({ tonequiz }) {
           )}
           {tresponse && studentinfo === 1 && (
             <>
-              {tonequiz.studentcount===0 && (
-                  <Card className="mb-5 text-center h4 text-warning">
-                    <Card.Body>No studnets has completed quiz yet.</Card.Body>
-                  </Card>
+              {tonequiz.studentcount === 0 && (
+                <Card className="mb-5 text-center h4 text-warning">
+                  <Card.Body>No studnets has completed quiz yet.</Card.Body>
+                </Card>
               )}
               {tresponse.students.map((e, j) => (
-                  <Card.Text className={`w-75 mx-auto text-center ${textcolor[j%(textcolor.length)]}`}>
-                    <b>{j + 1}. </b> {e.useremail}: <span className="text-white bg-dark">( {e.result}/
-                    {tresponse.questions.length} )</span>
-                  </Card.Text>
+                <Card.Text
+                  className={`w-75 mx-auto text-center ${
+                    textcolor[j % textcolor.length]
+                  }`}
+                >
+                  <b>{j + 1}. </b> {e.useremail}:{" "}
+                  <span className="text-white bg-dark">
+                    ( {e.result}/{tresponse.questions.length} )
+                  </span>
+                </Card.Text>
               ))}
             </>
           )}

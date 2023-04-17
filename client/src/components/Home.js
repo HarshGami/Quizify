@@ -45,7 +45,10 @@ function Home() {
 
   return (
     <div className="text-center">
-      <div className="pt-5" style={{ backgroundColor: "#5000ca", color: "white" }}>
+      <div
+        className="pt-5"
+        style={{ backgroundColor: "#5000ca", color: "white" }}
+      >
         <div className="h1 py-4">Welcome to Quizify</div>
         <div className="h3">Create a Quiz</div>
         <div className="h5">Or</div>

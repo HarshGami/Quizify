@@ -52,7 +52,7 @@ exports.enterquiz = async (req, res) => {
 
     if (!user) {
       res.json({ status: "error", message: "Quiz not found" });
-      return ;
+      return;
     }
 
     const questions = await user.questions.map((e) => {
@@ -109,7 +109,7 @@ exports.submitquiz = async (req, res) => {
         }
       }
     }
-    
+
     await resultmodel.create({
       useremail: req.body.useremail,
       createdby: req.body.createdby,
